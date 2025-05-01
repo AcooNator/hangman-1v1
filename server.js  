@@ -1,0 +1,46 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(express.static('public'));
+
+let word = 'JAVASCRIPT';
+let displayWord = '_'.repeat(word.length);
+let remainingAttempts = 6;
+
+io.on('connection', (socket) => {
+  socket.emit('updateWord', displayWord);
+
+  socket.on('guess', (letter) => {
+    let updated = false;
+    let newDisplay = displayWord.split('');
+
+    for (let i = 0; i < word.length; i++) {
+      if (word[i] === letter) {
+        newDisplay[i] = letter;
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      remainingAttempts--;
+    }
+
+    displayWord = newDisplay.join('');
+    io.emit('updateWord', displayWord);
+
+    if (displayWord === word) {
+      io.emit('gameOver', 'Pobedili ste!');
+    } else if (remainingAttempts === 0) {
+      io.emit('gameOver', `Izgubili ste! Reč je bila: ${word}`);
+    }
+  });
+});
+
+server.listen(3000, () => {
+  console.log('Server pokrenut na portu 3000');
+});

@@ -1,0 +1,18 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  #game {
+    margin-top: 50px;
+  }
+  #wordDisplay {
+    font-size: 2em;
+    letter-spacing: 10px;
+  }
+  #keyboard button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 1em;
+  }
+  
